@@ -18,8 +18,8 @@ exports.login = async function (ctx, next) {
     if (password == tokenService.createHash(ctx.request.body.password)) {
       let token = tokenService.createToken(user);//"token"
      // logins[digest(token)]=true
-     redis.set(tokenService.createHash(token), true, 'EX', tokenService.expiresIn, ()=>{
-   });
+   //  redis.set(tokenService.createHash(token), true, 'EX', tokenService.expiresIn, ()=>{
+  // });
 
       return ctx.body = { 
           status: 'success',  
@@ -92,7 +92,7 @@ const headers = ctx.request.headers;
     return ctx.body = {
           status: 'fail', 
           description:err
-        };;
+        };
   }
 
   if (!token) {
@@ -110,7 +110,8 @@ const headers = ctx.request.headers;
           description: 'Token verify failed'
         };
   }
-
+ return next();
+ /*
  let reply = await redis.getAsync(tokenService.createHash(token));
   if (reply === true) {
     return next();
@@ -119,7 +120,7 @@ const headers = ctx.request.headers;
           status: 'fail', 
           description: 'Token invalid'
         };
-  }
+  }*/
 
 }
 
