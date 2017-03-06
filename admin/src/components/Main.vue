@@ -3,7 +3,8 @@
     <top></top>
     <sidebar></sidebar>
     <div class="main">
-      <router-view :key="$route.params.id || -1"></router-view>
+      <!--:key="$route.params.id || -1"-->
+      <router-view></router-view>
     </div>
   </div>
 </template>
@@ -16,7 +17,7 @@ export default {
   name: 'dashboard',
   data () {
     return {
-      title: ''
+      title: 'this is demo'
     }
   },
   components: {

@@ -4,104 +4,24 @@ Vue.use(VueRouter)
 
 import createListView from '../components/views/CreateListView'
 import createEditView from '../components/views/CreateEditView'
-//import createMarkdownView from '../components/views/CreateMarkdownView'
 
 import Main from '../components/Main'
 import Dashboard from '../components/pages/Dashboard'
 import Login from '../components/pages/Login'
 import Logout from '../components/pages/Logout'
-
-export default new VueRouter({
-  mode: 'history',
-  scrollBehavior: function (to, from, savedPosition) {
-    return savedPosition || { x: 0, y: 0 }
-  },
-  routes: [
-    {
-      path: '/admin/login',
-      name: 'login',
-      component:  Login
-    },
-    {
-      path: '/admin/logout',
-      name: 'logout',
-      components: {
-        default: Logout
-      }
-    },
-    {
-      path: '/dashboard',
-      component: Main,
-      children: [
-        {
-          path: '/',
-          name: 'dashboard',
-          component: Dashboard
-        }
-      ]
-    },
-    {
-      path: '/cate',
-      name: 'cate',
-      component: Main,
-      children: [
-        {
-          path: 'list',
-          name: 'cateList',
-          component: createListView({
-            name: 'cate',
-            model: 'category',
-            items: [
+const catInfo=[
               {
                 prop: 'code',
                 label: '编码',
-                width: 50
+                 width: 150
               },
               {
                 prop: 'name',
                 label: '分类名',
                 width: 250
               }
-            ],
-            query: {}
-          })
-        },
-        {
-          path: 'create/:id?',
-          name: 'cateCreate',
-          component: createEditView({
-            name: 'cate',
-            model: 'category',
-            items: [
-              {
-                prop: 'code',
-                label: '编码',
-                width: 50
-              },
-              {
-                prop: 'name',
-                label: '分类名',
-                width: 250
-              }
-            ],
-            query: {}
-          })
-        }
-      ]
-    },
-    {
-      path: '/user',
-      name: 'user',
-      component: Main,
-      children: [
-        {
-          path: 'edit',
-          name: 'userEdit',
-          component: createEditView({
-            name: 'user',
-            model: 'user',
-            isPlain: true,
-            items: [
+            ]
+const userInfo=[
               {
                 prop: 'name',
                 label: '账号',
@@ -128,7 +48,94 @@ export default new VueRouter({
                 width: 170,
                 description: '在文章被回复时博客需要通知的目标邮箱，空则不通知'
               }
-            ],
+            ]
+export default new VueRouter({
+  mode: 'history',
+  scrollBehavior: function (to, from, savedPosition) {
+    return savedPosition || { x: 0, y: 0 }
+  },
+  routes: [
+    {
+      path: '/admin/login',
+      name: 'login',
+      component: Login
+      
+    },
+    {
+      path: '/admin/logout',
+      name: 'logout',
+     component: Logout
+
+    },
+    {
+      path: '/dashboard',
+      component: Main,
+      children: [
+        {
+          path: '/',
+          name: 'dashboard',
+          component: Dashboard
+        }
+      ]
+    },
+    {
+      path: '/cate',
+      name: 'cate',
+      component: Main,
+      children: [
+        {
+          path: 'list',
+          name: 'cateList',
+          component: createListView({
+            name: 'cate',
+            model: 'category',
+            items:catInfo
+          })
+        },
+        {
+          path: 'create/:id?',
+          name: 'cateCreate',
+          component: createEditView({
+            name: 'cate',
+            model: 'category',
+            items: catInfo
+          })
+        }
+      ]
+    },
+    {
+      path: '/user',
+      name: 'user',
+      component: Main,
+      children: [
+              {
+          path: 'list',
+          name: 'userList',
+          component: createListView({
+            name: 'user',
+            model: 'user',
+            items: userInfo
+          })
+        },
+            {
+          path: 'edit',
+          name: 'setting',
+          component: createEditView({
+            name: 'user',
+            model: 'user',
+            isSetting: true,
+            items: userInfo,
+            query: {}
+          })
+        },
+        {
+           path: 'create/:id?',
+          name: 'userCreate',
+          component: createEditView({
+            name: 'user',
+            model: 'user',
+           // isPlain: true,
+            items: userInfo,
             query: {}
           })
         }

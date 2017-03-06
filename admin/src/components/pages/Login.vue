@@ -38,7 +38,7 @@ export default {
   methods: {
     onSubmit () {
       Api.login(this.form).then(response => {
-        console.log(response.data)
+       
         if (response.data.status === 'fail') {
           this.$message({
             message: '登陆失败，请检查帐号与密码',
@@ -48,19 +48,18 @@ export default {
         } else if (response.data.status === 'success') {
           window.localStorage.setItem('token', response.data.token)
           window.localStorage.setItem('username', this.form.name)
+          // this.$store.dispatch("LOGIN",{user:{displayName:this.form.name}})
           this.$message({
             message: '登陆成功',
             type: 'success',
             duration: 2000
           })
-           this.$router.push({ path: '/dashboard' })
-        /*  this.$store.dispatch('FETCH_USER', {
+           this.$store.dispatch('FETCH_USER', {
             model: 'user',
-            query: {},
-            username: this.form.name
+            query: {"conditions":{"name":this.form.name}},
           }).then(() => {
-           
-          })*/
+            this.$router.push({ path: '/dashboard' })
+          })
         }
       }).catch(err => console.error(err))
     }

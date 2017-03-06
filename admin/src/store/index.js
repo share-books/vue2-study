@@ -36,9 +36,7 @@ const store = new Vuex.Store({
       if (id === -1) {
         return api.fetchList(model, query).then(curr => {
           let obj = curr.reduce((prev, value) => {
-            if (model === 'option') {
-              prev[value.key] = value.value
-            } else if (model === 'user') {
+            if (model === 'user') {
               Object.keys(value).forEach(item => {
                 prev[item] = value[item]
               })
@@ -53,35 +51,15 @@ const store = new Vuex.Store({
         })
       }
     },
-
+  
     POST: ({ commit, state }, { model, form }) => {
-      if (model !== 'post' && model !== 'option' && model !== 'user') {
-        return api.post(model, form)
-      } else if (model === 'user' || model === 'post') {
-        let { _id: id } = form
-        if (typeof id !== 'undefined') {
-          return api.patchByID(model, id, form).then((result) => {
-            if (model === 'user') {
-              commit('SET_USER', { user: result })
-            }
-            return result
-          })
-        } else {
-          return api.post(model, form)
-        }
-      } else if (model === 'option') {
-        let promiseArr = Object.keys(form).reduce((prev, curr) => {
-          if (form[curr] !== state.curr[curr]) {
-            const { _id: id } = state.siteInfo[curr]
-            let promise = api.patchByID(model, id, {
-              value: form[curr]
-            })
-            prev.push(promise)
-          }
-          return prev
-        }, [])
-        return Promise.all(promiseArr)
-      }
+      //console.log(form)
+      return api.post(model, form).then((result) => {
+       
+          commit('SET_CURR', { obj: result })
+       
+        return result
+      })
     },
 
     GET_IMAGE_TOKEN: ({ commit, state }, body) => {
@@ -96,37 +74,22 @@ const store = new Vuex.Store({
       return api.deleteByID(model, id)
     },
 
-    FETCH_USER: ({ commit, state }, { model, query, username }) => {
+    FETCH_USER: ({ commit, state }, { model, query }) => {
+      
       return api.fetchList(model, query).then(result => {
-        for (let i = 0, len = result.length; i < len; i++) {
-          let user = result[i]
-          if (user.name === username) {
-            commit('SET_USER', { user })
-            break
-          }
+        if  (result.length > 0) {
+         
+          commit('SET_USER', { user: result[0] })
+           console.log(state.user)
         }
-      })
-    },
 
-    FETCH_OPTIONS: ({ commit, state }) => {
-      return api.fetchList('option', {}).then(optionArr => {
-        let obj = optionArr.reduce((prev, curr) => {
-          prev[curr.key] = curr
-          return prev
-        }, {})
-        commit('SET_OPTIONS', { obj })
       })
     }
-
   },
 
   mutations: {
     SET_LIST: (state, { obj }) => {
       Vue.set(state, 'list', obj)
-    },
-
-    SET_OPTIONS: (state, { obj }) => {
-      Vue.set(state, 'siteInfo', obj)
     },
 
     SET_CURR: (state, { obj }) => {

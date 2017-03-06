@@ -5,7 +5,7 @@
                 class="full-height" :unique-opened="true"
                 @select="handleSelect">
 
-        <el-menu-item index="/dashboard"><i class="el-icon-date"></i>概述</el-menu-item>
+        <el-menu-item index="/dashboard"><i class="el-icon-date"></i>首页</el-menu-item>
 
         <el-submenu index="2">
           <template slot="title"><i class="el-icon-star-on"></i>分类管理</template>
@@ -14,16 +14,12 @@
         </el-submenu>
         
         <el-submenu index="3">
-          <template slot="title"><i class="el-icon-star-off"></i>标签管理</template>
-          <el-menu-item index="/tag/list">标签列表</el-menu-item>
-          <el-menu-item index="/tag/create">添加标签</el-menu-item>
+          <template slot="title"><i class="el-icon-star-off"></i>用户管理</template>
+          <el-menu-item index="/user/list">用户列表</el-menu-item>
+          <el-menu-item index="/user/create">添加用户</el-menu-item>
         </el-submenu>
-        
-        <el-menu-item index="/user/edit"><i class="el-icon-star-off"></i>用户设置</el-menu-item>
-        
-            
-
-      </el-menu>
+      
+       </el-menu>
     </el-col>
   </el-row>
 </template>
@@ -52,6 +48,7 @@ export default {
   },
   beforeMount () {
     this.fullPath = this.$route.path.split('/').slice(0, 3).join('/')
+    console.log(this.fullPath)
   }
 }
 </script>

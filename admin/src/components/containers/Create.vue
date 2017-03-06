@@ -19,21 +19,18 @@
 </template>
 
 <script>
-const blackModelArr = ['option', 'user']
+const blackModelArr = ['user']
 
 export default {
-  name: 'list',
+  name: 'create',
   props: ['options'],
   data () {
-    let isPost = this.options.name === 'post'
-    let isPage = this.options.name === 'page'
     let form = this.options.items.reduce((prev, curr) => {
       prev[curr.prop] = curr.default
       return prev
     }, {})
     return {
-      isPost,
-      isPage,
+  
       form,
       isLoading: true
     }
@@ -44,91 +41,54 @@ export default {
     }
   },
   methods: {
-    parseTypeBeforeSubmit () {
-      let isOk = true
-      this.options.items.forEach(item => {
-        try {
-          if (item.sourceType === 'Object') {
-            this.form[item.prop] = JSON.parse(this.form[item.prop], null, 2)
-          }
-        } catch (err) {
-          isOk = false
-        }
-      })
-      return isOk
-    },
-    parseTypeAfterFetch () {
-      this.options.items.forEach(item => {
-        if (item.sourceType === 'Object') {
-          this.form[item.prop] = JSON.stringify(this.form[item.prop], null, 2)
-        }
-      })
-    },
-    setParams (response) {
-      let id = this.$route.params.id
-      if (response._id && typeof id === 'undefined') {
-        this.$router.replace({ params: { id: response._id } })
-        this.form = response
-      }
-    },
-    onSubmit () {
-      if (this.parseTypeBeforeSubmit() === false) {
-        return this.$message.error('属性验证失败')
-      }
+      onSubmit () {
       let id = this.$route.params.id
       if (typeof id !== 'undefined') {
-        // patch
-        return this.$store.dispatch('PATCH', Object.assign({}, {
+           return this.$store.dispatch('PATCH', Object.assign({}, {
           id: this.$route.params.id,
           form: this.form
         }, this.options)).then(response => {
-          this.parseTypeAfterFetch()
+   
           this.$message({
             message: '已成功提交',
             type: 'success'
           })
-          this.setParams(response)
+  
         }).catch(err => console.error(err))
       } else {
         // post
         return this.$store.dispatch('POST', Object.assign({}, {
           form: this.form
         }, this.options)).then(response => {
-          this.parseTypeAfterFetch()
+   
+          this.$router.go(-1)
           this.$message({
             message: '已成功提交',
             type: 'success'
           })
-          let model = this.options.model
-          if (blackModelArr.indexOf(model) === -1) {
-            this.setParams(response)
-          }
+      
         }).catch(err => console.error(err))
       }
     }
   },
   created () {
-    // flatten user and options into obj
-    if (this.options.isPlain === true) {
-      return this.$store.dispatch('FETCH_CREATE', Object.assign({}, {
-        id: -1
-      }, this.options)).then(() => {
-        this.form = Object.assign({}, this.$store.state.curr)
-        this.isLoading = false
-      }).catch(err => console.error(err))
-    }
 
-    // if params has value , fetch from the model
+    if (this.options.isSetting === true) {
+        this.form = Object.assign({}, this.$store.state.user)
+        this.isLoading = false
+        return
+      }
+ 
     if (typeof this.$route.params.id !== 'undefined') {
       return this.$store.dispatch('FETCH_CREATE', Object.assign({}, {
         id: this.$route.params.id
       }, this.options)).then(() => {
         this.form = Object.assign({}, this.$store.state.curr)
-        this.parseTypeAfterFetch()
+
         this.isLoading = false
       }).catch(err => console.error(err))
     }
-    // else it's a new page, nothing to do
+    
   }
 }
 </script>
