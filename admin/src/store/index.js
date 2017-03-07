@@ -80,7 +80,7 @@ const store = new Vuex.Store({
         if  (result.length > 0) {
          
           commit('SET_USER', { user: result[0] })
-           console.log(state.user)
+          // console.log(state.user)
         }
 
       })

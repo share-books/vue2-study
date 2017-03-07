@@ -28,6 +28,14 @@ module.exports = {
         pathRewrite: {
           '^/proxyPrefix': ''
         }
+      },
+      '/fsPrefix': {
+        target: 'http://192.168.1.200:8888/',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/fsPrefix': ''
+        }
+       
       }
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"

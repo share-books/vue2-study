@@ -3,7 +3,8 @@
     <el-row>
       <el-col :span="24">
         <div class="info">
-          <h1>网站概要</h1>
+         <a :href="'http://192.168.1.200:9333/'+file.fid">{{file.name}}</a>
+         
        </div>
         <el-slider style="margin-top: 20px" v-model="sliderValue"></el-slider>
       </el-col>
@@ -23,23 +24,33 @@
 </template>
 
 <script>
+const FILE_SERVER = `/fsPrefix`
+import request from 'axios'
+
 export default {
   name: 'info',
   data () {
     return {
       sliderValue: 100,
-      data: [],
-      defaultProps: {
-        children: 'children',
-        label: 'title'
-      },
-      list: []
+      file:{
+        name:'',
+        fid:''
+      }
     }
   },
   methods: {
     handleNodeClick (data, node, tree) {
     
     }
+  },
+  created(){
+    console.log("created")
+    request.get(FILE_SERVER,{ headers: {'Accept': 'application/json','X-Requested-With': 'XMLHttpRequest'}}).then(response=>{
+      console.log( response.data)
+      let {name,fid}=response.data.Files[0]
+      this.file={name,fid}
+    })
+
   },
   mounted () {
   /*  this.$store.dispatch('FETCH', {
