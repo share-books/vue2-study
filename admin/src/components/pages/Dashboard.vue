@@ -45,7 +45,7 @@ export default {
   },
   created(){
     console.log("created")
-    request.get(FILE_SERVER,{ headers: {'Accept': 'application/json','X-Requested-With': 'XMLHttpRequest'}}).then(response=>{
+    request.get(FILE_SERVER,{ headers: {'Accept': 'application/json'}}).then(response=>{
       console.log( response.data)
       let {name,fid}=response.data.Files[0]
       this.file={name,fid}
